@@ -51,7 +51,7 @@ const RandomFood = () => {
 
             {random && (
                 <>
-                    <p className='text-xl'>Don't know what to cook for <em className='text-red-500'>{random.type}</em>? Try this recipe 👇</p>
+                    <p className='text-xl'>Don't know what to cook for <em className='text-rose-500'>{random.type}</em>? Try this recipe 👇</p>
                     <div className='bg-custom-white p-8 shadow-md rounded'>
                         <h2 className='font-bold text-3xl'>{random.name}</h2>
                         <h3 className='font-bold text-2xl'>Ingredients:</h3>

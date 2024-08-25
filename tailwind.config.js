@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'btn-bg': '#974E44',
+        'btn-bg': '#f43f5e',
         'brownish-white': '#FFF0ED',
         'custom-white': '#f8fafc',
       }
