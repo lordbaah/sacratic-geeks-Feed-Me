@@ -10,6 +10,8 @@ const App = () => {
     <>
        <Hero/>
        <FoodListLayout/>
+       {/* <Test/> */}
+
        <footer className='mt-8'>
         <div className='custom-screen py-4 flex items-center justify-between'>
           <p>CopyRight @2024</p>

@@ -6,15 +6,38 @@ import InputBox from '../Inputbox/InputBox';
 
 const FoodListLayout = () => {
   const [foods, setFoods] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({ id: null, name: '', ingredients: [] });
   const [showAll, setShowAll] = useState(false);
 
+  // useEffect(() => {
+  //   setFoods(foodData);
+  // }, []);
+
   useEffect(() => {
-    setFoods(foodData);
-  }, []);
+    const fetchFoods = async () => {
+        try {
+            const response = await fetch (`https://feedme-api.onrender.com/`);
+            if (!response.ok) {
+                throw new Error(`HTTP error: Status ${response.status}`);
+            }
+            let foodData = await response.json();
+            setFoods(foodData);
+            setError(null);
+        } catch (error) {
+            setError(err.message);
+            setFoods(null);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    fetchFoods();
+},[]);
 
   // Get unique categories
   const categories = ['All', ...new Set(foods.map(food => food.type))];
@@ -41,6 +64,12 @@ const FoodListLayout = () => {
       <div className='custom-screen mt-6'>
         <div className="w-full flex flex-col items-center">
           <InputBox setSearchTerm={setSearchTerm}/>
+
+          {loading && (
+            <div className="text-xl font-medium text-center">Loading Food...</div>
+          )}
+
+          {error && <div className="text-red-700">{error}</div>}
 
           <div className="flex gap-4 flex-wrap mb-6">
             {categories.map(category => (
