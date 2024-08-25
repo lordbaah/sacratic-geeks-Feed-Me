@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-// import foodData from '../../data/meals.json'
+import foodData from '../../data/meals.json';
 
 const RandomFood = () => {
     const [foods, setFoods] = useState([]);
@@ -7,29 +7,22 @@ const RandomFood = () => {
     const [loading, setLoading] = useState(true);
     const [random, setRandom] = useState(null);
 
-    // useEffect(() => {
-    //     setFoods(foodData);
-    // }, [])
-
     useEffect(() => {
-        const fetchFoods = async () => {
+        // Simulate data fetching with a timeout
+        const fetchData = async () => {
             try {
-                const response = await fetch(`https://feedme-api.onrender.com/`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error: Status ${response.status}`);
-                }
-                const foodData = await response.json();
-                setFoods(foodData);
-                setError(null);
+                setLoading(true);
+                setTimeout(() => {
+                    setFoods(foodData);
+                    setLoading(false);
+                }, 1000); // Simulated network delay
             } catch (error) {
-                setError(error.message);
-                setFoods([]);
-            } finally {
+                setError("Failed to load food data");
                 setLoading(false);
             }
         };
 
-        fetchFoods();
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -49,7 +42,7 @@ const RandomFood = () => {
             {loading && <div className="text-xl font-medium">Loading Food...</div>}
             {error && <div className="text-red-700">{error}</div>}
 
-            {random && (
+            {!loading && !error && random && (
                 <>
                     <p className='text-xl'>Don't know what to cook for <em className='text-rose-500'>{random.type}</em>? Try this recipe 👇</p>
                     <div className='bg-custom-white p-8 shadow-md rounded'>

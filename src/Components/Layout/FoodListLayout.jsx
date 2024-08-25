@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import foodData from '../../data/meals.json';
 import Card from "../Card/Card";
 import Modal from '../Modal/Modal';
 import InputBox from '../Inputbox/InputBox';
@@ -14,24 +15,22 @@ const FoodListLayout = () => {
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
-    const fetchFoods = async () => {
+    // Simulate fetching data with a timeout
+    const fetchData = async () => {
       try {
-        const response = await fetch('https://feedme-api.onrender.com/');
-        if (!response.ok) {
-          throw new Error(`HTTP error: Status ${response.status}`);
-        }
-        const foodData = await response.json();
-        setFoods(foodData);
-        setError(null);
+        // Simulate a network request to load data
+        setLoading(true);
+        setTimeout(() => {
+          setFoods(foodData); // Load the local data
+          setLoading(false);
+        }, 1000); // Simulated network delay
       } catch (error) {
-        setError(error.message);
-        setFoods([]);
-      } finally {
+        setError("Failed to load food data");
         setLoading(false);
       }
     };
 
-    fetchFoods();
+    fetchData();
   }, []);
 
   // Get unique categories
