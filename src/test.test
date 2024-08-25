@@ -1,0 +1,37 @@
+import React from 'react';
+
+// Function to get color based on category
+const getCategoryColor = (category) => {
+  const colorMap = {
+    'Breakfast': 'bg-yellow-300',
+    'Lunch': 'bg-green-300',
+    'Dinner': 'bg-blue-300',
+    'Dessert': 'bg-pink-300',
+    'Snack': 'bg-purple-300',
+    // Add more categories and colors as needed
+  };
+
+  // Return the color for the category, or a default color if not found
+  return colorMap[category] || 'bg-gray-300';
+};
+
+const Card = ({ Foodid, name, category, ingredients, onOpenModal }) => {
+  const categoryColorClass = getCategoryColor(category);
+
+  return (
+    <div className='p-4 border-solid border-2 border-black rounded'>
+      <p className='font-bold'>{name}</p>
+      <div className='mt-4 flex justify-between'>
+        <p className={`font-semi-bold ${categoryColorClass} p-1 rounded-sm`}>{category}</p>
+        <button 
+          className='bg-btn-bg text-custom-white py-1 px-3 rounded'
+          onClick={() => onOpenModal(Foodid, name, ingredients)}
+        >
+          View Ingredients
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default Card;
