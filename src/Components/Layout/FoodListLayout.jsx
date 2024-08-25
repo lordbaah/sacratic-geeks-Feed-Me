@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Card from "../Card/Card";
-import foodData from '../../data/meals.json';
 import Modal from '../Modal/Modal';
 import InputBox from '../Inputbox/InputBox';
 
@@ -14,30 +13,26 @@ const FoodListLayout = () => {
   const [modalContent, setModalContent] = useState({ id: null, name: '', ingredients: [] });
   const [showAll, setShowAll] = useState(false);
 
-  // useEffect(() => {
-  //   setFoods(foodData);
-  // }, []);
-
   useEffect(() => {
     const fetchFoods = async () => {
-        try {
-            const response = await fetch (`https://feedme-api.onrender.com/`);
-            if (!response.ok) {
-                throw new Error(`HTTP error: Status ${response.status}`);
-            }
-            let foodData = await response.json();
-            setFoods(foodData);
-            setError(null);
-        } catch (error) {
-            setError(err.message);
-            setFoods(null);
-        } finally {
-            setLoading(false);
+      try {
+        const response = await fetch('https://feedme-api.onrender.com/');
+        if (!response.ok) {
+          throw new Error(`HTTP error: Status ${response.status}`);
         }
-    }
+        const foodData = await response.json();
+        setFoods(foodData);
+        setError(null);
+      } catch (error) {
+        setError(error.message);
+        setFoods([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchFoods();
-},[]);
+  }, []);
 
   // Get unique categories
   const categories = ['All', ...new Set(foods.map(food => food.type))];
@@ -45,11 +40,11 @@ const FoodListLayout = () => {
   const filteredFoods = foods.filter(food =>
     (activeCategory === 'All' || food.type === activeCategory) &&
     food.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
   
-  const visibleFood = showAll ? filteredFoods : filteredFoods.slice(0, 20); // Display first 20 food initially
+  const visibleFood = showAll ? filteredFoods : filteredFoods.slice(0, 20); // Display first 20 foods initially
 
-  // modal function
+  // Modal function
   const handleOpenModal = (id, name, ingredients) => {
     setModalContent({ id, name, ingredients });
     setModalOpen(true);
@@ -63,7 +58,7 @@ const FoodListLayout = () => {
     <section>
       <div className='custom-screen mt-6'>
         <div className="w-full flex flex-col items-center">
-          <InputBox setSearchTerm={setSearchTerm}/>
+          <InputBox setSearchTerm={setSearchTerm} />
 
           {loading && (
             <div className="text-xl font-medium text-center">Loading Food...</div>
@@ -71,47 +66,55 @@ const FoodListLayout = () => {
 
           {error && <div className="text-red-700">{error}</div>}
 
-          <div className="flex gap-4 flex-wrap mb-6">
-            {categories.map(category => (
-              <button
-                key={category}
-                className={`px-4 py-2 rounded ${
-                  activeCategory === category
-                    ? 'bg-btn-bg text-custom-white'
-                    : 'bg-gray-200 text-gray-800'
-                }`}
-                onClick={() => setActiveCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+          {!loading && !error && (
+            <>
+              <div className="flex gap-4 flex-wrap mb-6">
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    className={`px-4 py-2 rounded ${
+                      activeCategory === category
+                        ? 'bg-btn-bg text-custom-white'
+                        : 'bg-gray-200 text-gray-800'
+                    }`}
+                    onClick={() => setActiveCategory(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
 
-          <div className='w-full mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-            {visibleFood.map((food) => (
-              <Card 
-                key={food.id} 
-                Foodid={food.id} 
-                name={food.name} 
-                category={food.type} 
-                ingredients={food.ingredients}
-                onOpenModal={handleOpenModal}
-              />
-            ))}
-          </div>
-          {filteredFoods.length > 20 && (
-              <button onClick={() => setShowAll(!showAll)} className="bg-btn-bg text-custom-white text-sm py-2 px-4 rounded mt-4">
-                {showAll ? 'View Less' : 'View More'}
-              </button>
-            )}
+              <div className='w-full mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                {visibleFood.map((food) => (
+                  <Card 
+                    key={food.id} 
+                    Foodid={food.id} 
+                    name={food.name} 
+                    category={food.type} 
+                    ingredients={food.ingredients}
+                    onOpenModal={handleOpenModal}
+                  />
+                ))}
+              </div>
+
+              {filteredFoods.length > 20 && (
+                <button 
+                  onClick={() => setShowAll(!showAll)} 
+                  className="bg-btn-bg text-custom-white text-sm py-2 px-4 rounded mt-4"
+                >
+                  {showAll ? 'View Less' : 'View More'}
+                </button>
+              )}
+            </>
+          )}
+
+          {modalOpen && (
+            <Modal modalContent={modalContent} handleCloseModal={handleCloseModal} />
+          )}
         </div>
-
-        {modalOpen && (
-            <Modal modalContent={modalContent} handleCloseModal={handleCloseModal}/>
-        )}
       </div>
     </section>
-  )
-}
+  );
+};
 
 export default FoodListLayout;

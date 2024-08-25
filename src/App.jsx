@@ -15,7 +15,7 @@ const App = () => {
        <footer className='mt-8'>
         <div className='custom-screen py-4 flex items-center justify-between'>
           <p>CopyRight @2024</p>
-          <a href="" target='blank'>Built with FeedMe Api</a>
+          <a href="https://github.com/Gozkybrain/feedMe-API" target='blank'>Built with FeedMe Api by Gozybrain</a>
         </div>
        </footer>
     </>
